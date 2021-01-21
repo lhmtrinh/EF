@@ -43,9 +43,11 @@ public class EFController {
 		Calendar to = Calendar.getInstance();
 		Portfolio portfolio = new Portfolio(tickers, from, to);
 		Map<Integer, double[]> ef = new HashMap<Integer,double[]>();
+		//make sure to have the same set of random weights for debugging purpose
+		Random random = new Random(3000);
 		for (int i = 0; i< portfolios; i++) {
 			int stockNumber = portfolio.getStockWrappers().size();
-			double[] weights = generateWeights(stockNumber);			
+			double[] weights = generateWeights(random, stockNumber);			
 			for (int j = 0; j < stockNumber; j++) {
 				portfolio.getStockWrappers().get(j).setWeight(weights[j]);
 			}
@@ -58,8 +60,7 @@ public class EFController {
 		return ef;
 	}
 	
-	public static double[] generateWeights(int stocksNumber) {
-		Random random = new Random(3000);
+	public static double[] generateWeights(Random random, int stocksNumber) {
 		double sum = 0;
 		double [] weights = new double[stocksNumber];
 		for (int i = 0; i < weights.length; i++) {
