@@ -3,18 +3,13 @@ package efficientFrontier.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Random;
 
 import org.apache.commons.math3.stat.correlation.Covariance;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import yahoofinance.Stock;
 
 @Getter
 @Setter
@@ -82,7 +77,6 @@ public class Portfolio {
 						double weight1 = this.stockWrappers.get(i).getWeight();
 						double weight2 = this.stockWrappers.get(j).getWeight();					
 						portfolioVariance += cov.covariance(arr1, arr2)*weight1*weight2;
-//						System.out.println("w*w*cov is: "+cov.covariance(arr1, arr2)*weight1*weight2);
 					} catch (Exception e) {
 						log.info("Cant handle exception when calculating portfolio covariance");
 					} 

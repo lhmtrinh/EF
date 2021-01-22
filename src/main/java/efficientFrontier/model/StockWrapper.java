@@ -29,13 +29,13 @@ public class StockWrapper {
 	private ArrayList<Double> adjustedCloses;
 	private double riskRate;
 	
+	//Constructor
 	public StockWrapper(String ticker, Calendar from, Calendar to) {
 		this.ticker = ticker;
 		setAdjustedCloses(from,to);
-		setReturnRates();
-		setReturnRate();
-		setRiskRate();
 	}
+	
+	//Receive stock adjusted close price
 	public void setAdjustedCloses(Calendar from, Calendar to) {
 		try {
 			//create a list of adjusted close price
@@ -53,6 +53,8 @@ public class StockWrapper {
 			log.info(e.toString());
 		}
 	}
+	
+	//Calculate return rates of each month using adjusted close prices
 	public void setReturnRates() {
 		ArrayList<Double> returnRates = new ArrayList<>();
 		for (int i = 0; i < this.adjustedCloses.size()-1; i++) {
@@ -61,20 +63,26 @@ public class StockWrapper {
 		}
 		this.returnRates = returnRates;
 	}
-	public void populateReturnAndRisk() {
-		setReturnRate();
-		setRiskRate();
-	}
+	//Calculate return rate of a stock
 	public void setReturnRate() {
 		double sum =0;
 		for (double returnRate: returnRates) {
 			sum+= returnRate;
 		}
+		//Average of all period's return rates
 		this.returnRate = sum/returnRates.size();
 	}	
+	//Calculate risk rate of a stock
 	public void setRiskRate() {
 		StandardDeviation std = new StandardDeviation();
+		//Risk is the standard deviation of return rates
 		this.riskRate=std.evaluate(this.returnRates.stream().mapToDouble(Double::doubleValue).toArray());
+	}
+	//Populate data function. Will be used in class Portfolio
+	public void populateReturnAndRisk() {
+		setReturnRates();
+		setReturnRate();
+		setRiskRate();
 	}
 }
 
