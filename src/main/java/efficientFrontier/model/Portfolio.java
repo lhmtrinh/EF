@@ -19,33 +19,44 @@ public class Portfolio {
 	private double returnRate;
 	private double riskRate;
 	
+	//Constructor
 	public Portfolio() {
 		stockWrappers = new ArrayList<>();
 	}
+	//Parameterized constructor
 	public Portfolio(ArrayList<String> tickers, Calendar from, Calendar to) {
 		stockWrappers = new ArrayList<>();
 		for (String ticker : tickers) {
+			//Adding new stockWrapper objects to the instance variable stockWrappers
 			this.stockWrappers.add(new StockWrapper(ticker, from, to));
 		}
-		//Making sure all stocks has the same amount of adjusted closes
+		eliminateAbundantAdjustedCloses();
+
+	}
+	//Make sure all stocks have the same number of adjusted close price observations
+	//Helpful to calculate portfolio risk rate which involves covariance
+	public void eliminateAbundantAdjustedCloses() {
+		//Set min number very high
 		int minAdjustedSize = 1000000000;
+		//Find the smallest size out of all assets
 		for (StockWrapper stockWrapper: stockWrappers) {
 			if ( minAdjustedSize >stockWrapper.getAdjustedCloses().size()) {
 				minAdjustedSize = stockWrapper.getAdjustedCloses().size();
 			}
 		}
+		//For every stocks, removing the last elements of the list if the list size is larger than min value
 		for (StockWrapper stockWrapper: stockWrappers) {
 			if ( minAdjustedSize < stockWrapper.getAdjustedCloses().size()) {
 				int diff = stockWrapper.getAdjustedCloses().size()-minAdjustedSize;
-				//remove the last elements
+				//Remove a number of elements based on how many more observations the list has than the minimum list
 				for (int i = 0; i<diff; i++) {
 					stockWrapper.getAdjustedCloses().remove(stockWrapper.getAdjustedCloses().size()-1);
 				}
 			}
+			//After processing adjustedCloses, set return, risk rate of each stock
 			stockWrapper.populateReturnAndRisk();		
 		}
 	}
-	
 	public void setReturnRate() {
 		double returnRate=0;
 		for (StockWrapper stockWrapper: stockWrappers) {
