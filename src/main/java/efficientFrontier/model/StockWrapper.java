@@ -1,26 +1,17 @@
 package efficientFrontier.model;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
-import efficientFrontier.controller.StockService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.With;
 import lombok.extern.slf4j.Slf4j;
-import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.histquotes.Interval;
@@ -64,7 +55,6 @@ public class StockWrapper {
 	}
 	public void setReturnRates() {
 		ArrayList<Double> returnRates = new ArrayList<>();
-		double sum = 0;
 		for (int i = 0; i < this.adjustedCloses.size()-1; i++) {
 			double returnRate = (this.adjustedCloses.get(i+1) - this.adjustedCloses.get(i))/this.adjustedCloses.get(i);
 			returnRates.add(returnRate);
