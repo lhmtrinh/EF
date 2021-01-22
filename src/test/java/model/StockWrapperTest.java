@@ -26,6 +26,7 @@ public class StockWrapperTest {
 		from.set(2021,1,20);
 		from.add(Calendar.MONTH, -6);
 		stock = new StockWrapper("INTC", from, to);
+		stock.populateReturnAndRisk();
 	}
 	
 	@Test
@@ -52,4 +53,8 @@ public class StockWrapperTest {
 		//maximum difference equal to 0.0000000009
 		assertEquals(0.157801082, stock.getRiskRate(),0.0000000009);
 	}
+	
+	
+	// Test on the period. HOW many observations do we get from how many months. Does that affect the adjusted close prices list
+	//
 }
