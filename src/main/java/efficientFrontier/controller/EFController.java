@@ -21,10 +21,6 @@ public class EFController {
 	private static final String template = "Hello, %s!";
 	private final AtomicLong counter = new AtomicLong();
 
-	@GetMapping("/greeting")
-	public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-		return new Greeting(counter.incrementAndGet(), String.format(template, name));
-	}
 	@GetMapping("/stock")
 	public ArrayList<Double> getAdjustedClose(@RequestParam(value = "ticker", defaultValue = "INTC") String ticker) {
 		Calendar from = Calendar.getInstance();
@@ -32,7 +28,7 @@ public class EFController {
 		return new StockWrapper(ticker,from, Calendar.getInstance()).getAdjustedCloses();
 	}
 	
-	@GetMapping("/ef")
+	@GetMapping("/")
 	public Map<Integer, double[]> efficientFrontier(
 			@RequestParam ArrayList<String> tickers,
 			@RequestParam(value = "portfolios", defaultValue = "10") int portfolios

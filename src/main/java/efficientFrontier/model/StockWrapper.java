@@ -41,6 +41,9 @@ public class StockWrapper {
 	public StockWrapper(String ticker, Calendar from, Calendar to) {
 		this.ticker = ticker;
 		setAdjustedCloses(from,to);
+		setReturnRates();
+		setReturnRate();
+		setRiskRate();
 	}
 	public void setAdjustedCloses(Calendar from, Calendar to) {
 		try {
@@ -59,11 +62,7 @@ public class StockWrapper {
 			log.info(e.toString());
 		}
 	}
-	public void populateReturnAndRisk() {
-		setReturnRate();
-		setRiskRate();
-	}
-	public void setReturnRate() {
+	public void setReturnRates() {
 		ArrayList<Double> returnRates = new ArrayList<>();
 		double sum = 0;
 		for (int i = 0; i < this.adjustedCloses.size()-1; i++) {
@@ -71,6 +70,13 @@ public class StockWrapper {
 			returnRates.add(returnRate);
 		}
 		this.returnRates = returnRates;
+	}
+	public void populateReturnAndRisk() {
+		setReturnRate();
+		setRiskRate();
+	}
+	public void setReturnRate() {
+		double sum =0;
 		for (double returnRate: returnRates) {
 			sum+= returnRate;
 		}
