@@ -23,6 +23,7 @@ public class Portfolio {
 	public Portfolio() {
 		stockWrappers = new ArrayList<>();
 	}
+	
 	//Parameterized constructor
 	public Portfolio(ArrayList<String> tickers, Calendar from, Calendar to) {
 		stockWrappers = new ArrayList<>();
@@ -33,6 +34,7 @@ public class Portfolio {
 		eliminateAbundantAdjustedCloses();
 
 	}
+	
 	//Make sure all stocks have the same number of adjusted close price observations
 	//Helpful to calculate portfolio risk rate which involves covariance
 	public void eliminateAbundantAdjustedCloses() {
@@ -57,30 +59,39 @@ public class Portfolio {
 			stockWrapper.populateReturnAndRisk();		
 		}
 	}
-	public void setReturnRate() {
+	
+	//Reset portfolio return rate
+	public void resetReturnRate() {
 		double returnRate=0;
+		//Return rate = sum of all (stock weight* stock return)
 		for (StockWrapper stockWrapper: stockWrappers) {
 			returnRate += stockWrapper.getReturnRate()*stockWrapper.getWeight();
 		}
+		//Round return rate
 		BigDecimal bd = new BigDecimal(returnRate).setScale(4, RoundingMode.HALF_UP);
 		this.returnRate= bd.doubleValue();
 	}
+	
+	//Get portfolio return rate
 	public double getReturnRate() {
-		setReturnRate();
+		//Reset portfolio return rate every stime a set of new weights is added
+		resetReturnRate();
 		return this.returnRate;
 	}
 	
-	public void setRiskRate() {
+	//Reset portfolio risk rate
+	public void resetRiskRate() {
 		double portfolioVariance = 0;
+		//Nested loop to find porfolio variance
 		for (int i = 0; i < this.stockWrappers.size(); i++) {
 			for (int j = 0; j< this.stockWrappers.size(); j++) {
 				if (i==j) {
-					//Squared of variance
+					//When i = j, increase the variance by the squared value of (stock risk * stock weight)
 					double weight = this.stockWrappers.get(i).getWeight();
 					double risk = this.stockWrappers.get(i).getRiskRate();
 					portfolioVariance += weight*weight*risk*risk;
 				} else {
-					//Covariance
+					//When i != j, increase the variance by stock 1 weight * stock 2 weight * covariance(stock 1, stock 2)
 					try {
 						Covariance cov = new Covariance();
 						double[] arr1 = this.stockWrappers.get(i).getReturnRates().stream().mapToDouble(Double::doubleValue).toArray();
@@ -89,19 +100,23 @@ public class Portfolio {
 						double weight2 = this.stockWrappers.get(j).getWeight();					
 						portfolioVariance += cov.covariance(arr1, arr2)*weight1*weight2;
 					} catch (Exception e) {
+						//Handle exception when input arrays have different sizes
 						log.info("Cant handle exception when calculating portfolio covariance");
 					} 
 				}
 			}
 		}
+		//Risk rate is the square root of the variance
 		double riskRate = Math.sqrt(portfolioVariance);
+		//Round the number
 		BigDecimal bd = new BigDecimal(riskRate).setScale(4, RoundingMode.HALF_UP);
 		riskRate = bd.doubleValue();
 		this.riskRate = riskRate; 
 	}
-	
+	//Get portfolio risk rate
 	public double getRiskRate() {
-		setRiskRate();
+		//Reset portfolio risk rate every time a set of new weights is added
+		resetRiskRate();
 		return this.riskRate;
 	}
 
