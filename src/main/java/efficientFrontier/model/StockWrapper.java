@@ -42,10 +42,12 @@ public class StockWrapper {
 			ArrayList<Double> adjustedCloses = new ArrayList<>();
 			//returning the historical quotes of stock from .... to .... with a monthly interval
 			List<HistoricalQuote> quotes= YahooFinance.get(this.ticker).getHistory(from, to, Interval.MONTHLY);
-			//add adjusted close price to the adjustedClose
+			//add not null adjusted close price to the adjustedClose
 			for (HistoricalQuote quote: quotes) {
-				adjustedCloses.add(quote.getAdjClose().doubleValue());
-			}
+				if (quote.getAdjClose() != null) {
+					adjustedCloses.add(quote.getAdjClose().doubleValue());
+				}
+			}		
 			//set the list
 			this.adjustedCloses = adjustedCloses;
 		} catch (IOException e) {
