@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import efficientFrontier.model.StockWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@CrossOrigin
 @RestController
 public class EFController {
 	private static final String template = "Hello, %s!";
