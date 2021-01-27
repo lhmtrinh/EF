@@ -20,15 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin
 @RestController
 public class EFController {
-	private static final String template = "Hello, %s!";
-	private final AtomicLong counter = new AtomicLong();
-
-	@GetMapping("/stock")
-	public ArrayList<Double> getAdjustedClose(@RequestParam(value = "ticker", defaultValue = "INTC") String ticker) {
-		Calendar from = Calendar.getInstance();
-		from.add(Calendar.MONTH, -13);
-		return new StockWrapper(ticker,from, Calendar.getInstance()).getAdjustedCloses();
-	}
 	
 	@GetMapping("/")
 	public Map<Integer, double[]> efficientFrontier(

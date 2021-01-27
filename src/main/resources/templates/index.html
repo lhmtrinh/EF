@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Efficient Frontier</title>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/data.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    </head> 
+    <body>
+        <figure class="highcharts-figure">
+            <div id="container"></div>
+            <table id="datatable">
+                <thead>
+                    <tr>
+                    <th rowspan="2" class="headerSort" tabindex="0" role="columnheader button" title="Sort ascending">Risk</th>
+                    <th rowspan="2" class="headerSort" tabindex="0" role="columnheader button" title="Sort ascending">Return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </figure>
+        <script>
+            var i;
+            axios.get('https://restef.herokuapp.com/?tickers=NFLX,AMZN,AAPL&portfolios=10000').then(resp => {
+                dataEF = resp.data;
+                addDataToTable(dataEF);
+            });
+            function addDataToTable(dataEF) {
+                var table = document.getElementById('datatable');
+                for(key in dataEF) {
+                    var returnRate = dataEF[key][0];
+                    var riskRate =dataEF[key][1];
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' +riskRate+'</td>'+
+                    '<td>'+returnRate+'</td>';
+                    table.appendChild(tr);
+                }
+                creatChart();
+            }
+            function creatChart(){
+                Highcharts.chart("container", {
+                    data: {
+                        table: "datatable",
+                        startRow: 1,
+                        startColumn: 0,
+                        endColumn: 1
+                    },
+                    chart: {
+                        type: "scatter"
+                    },
+                    title: {
+                        text: "Efficient Frontier"
+                    },
+                    yAxis: {
+                        title: {
+                        text: "Return rate (%)"
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    xAxis: {
+                        title: {
+                        text: "Risk rate (%)"
+                        }
+                    },
+                    tooltip: {
+                        // This is the weight
+                        pointFormat: "Risk: <b>{point.y}k</b>"
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
