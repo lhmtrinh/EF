@@ -10,72 +10,77 @@
         <script src="https://code.highcharts.com/modules/accessibility.js"></script>
         <style>
             #container {
-                height: 400px;
+            height: 400px;
             }
 
             .highcharts-figure,
             .highcharts-data-table table {
-                min-width: 310px;
-                max-width: 800px;
-                margin: 1em auto;
+            min-width: 310px;
+            max-width: 800px;
+            margin: 1em auto;
             }
 
             #datatable {
-                font-family: Verdana, sans-serif;
-                border-collapse: collapse;
-                border: 1px solid #ebebeb;
-                margin: 10px auto;
-                text-align: center;
-                width: 100%;
-                max-width: 500px;
+            font-family: Verdana, sans-serif;
+            border-collapse: collapse;
+            border: 1px solid #ebebeb;
+            margin: 10px auto;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
             }
             th,
             td {
-                font-size: 12px;
+            font-size: 12px;
             }
             #datatable th {
-                font-weight: 600;
-                padding: 0.5em;
+            font-weight: 600;
+            padding: 0.5em;
             }
             #datatable td,
             #datatable th,
             #datatable caption {
-                padding: 0.5em;
+            padding: 0.5em;
             }
             #datatable thead tr,
             #datatable tr:nth-child(even) {
-                background: #f8f8f8;
+            background: #f8f8f8;
             }
             #datatable tr:hover {
-                background: #f1f7ff;
+            background: #f1f7ff;
             }
         </style>
+    </head> 
+    <body>
+        <figure class="highcharts-figure">
+            <div id="container"></div>
+            <table id="datatable">
+                <thead>
+                    <tr>
+                    <th rowspan="2" class="headerSort" tabindex="0" role="columnheader button" title="Sort ascending">Risk</th>
+                    <th rowspan="2" class="headerSort" tabindex="0" role="columnheader button" title="Sort ascending">Return</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </figure>
         <script>
             var i;
-            axios.get('http://localhost:8080//ef?tickers=NFLX,AMZN,AAPL&portfolios=1000').then(resp => {
+            axios.get('https://restef.herokuapp.com/?tickers=NFLX,AMZN,AAPL&portfolios=10').then(resp => {
                 dataEF = resp.data;
                 console.log(dataEF);
                 addDataToTable(dataEF);
             });
             function addDataToTable(dataEF) {
                 var table = document.getElementById('datatable');
-                var tr =document.createElement('tr');
-                tr.innerHTML ='<th rowspan="2" class="headerSort" tabindex="0" role="columnheader button" title="Sort ascending">Risk</th>'+
-                '<th rowspan="2" class="headerSort" tabindex="0" role="columnheader button" title="Sort ascending">Return</th>';
-                for (ticker in dataEF['tickers']){
-                    tr.innerHTML += '<th rowspan="2" class="headerSort" tabindex="0" role="columnheader button" title="Sort ascending">'+dataEF['tickers'][ticker]+'(%) </th>';
-                }
-                var tableHeader = document.getElementById('tableHeader');
-                tableHeader.innerHTML = tr.innerHTML;
-                for(point in dataEF['curveList']) {
-                    tr = document.createElement('tr');
-                    var returnRate =dataEF['curveList'][point]['return'];
-                    var riskRate =dataEF['curveList'][point]['risk'];
-                    var weights = dataEF['curveList'][point]['weights'];
-                    tr.innerHTML = '<td>' +riskRate+'</td>'+'<td>'+returnRate+'</td>';
-                    for (key in weights){
-                        tr.innerHTML +='<td>'+weights[key]+'</td>';
-                    }
+                for(key in dataEF) {
+                    var returnRate = dataEF[key][0];
+                    var riskRate =dataEF[key][1];
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' +riskRate+'</td>'+
+                    '<td>'+returnRate+'</td>';
                     table.appendChild(tr);
                 }
                 creatChart();
@@ -84,7 +89,7 @@
                 Highcharts.chart("container", {
                     data: {
                         table: "datatable",
-                        startRow: 0,
+                        startRow: 1,
                         startColumn: 0,
                         endColumn: 1
                     },
@@ -108,22 +113,11 @@
                         }
                     },
                     tooltip: {
-                        pointFormat: "Risk: <b>{point.x}</b><br> Return: <b>{point.y}</b>"
+                        // This is the weight
+                        pointFormat: "Risk: <b>{point.y}k</b>"
                     }
                 });
             }
         </script>
-    </head> 
-    <body>
-        <figure class="highcharts-figure">
-            <div id="container"></div>
-            <table id="datatable">
-                <thead id="tableHeader">
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot></tfoot>
-            </table>
-        </figure>
     </body>
 </html>
