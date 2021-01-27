@@ -68,8 +68,9 @@
         </figure>
         <script>
             var i;
-            axios.get('https://restef.herokuapp.com/?tickers=NFLX,AMZN,AAPL&portfolios=10000').then(resp => {
+            axios.get('https://restef.herokuapp.com/?tickers=NFLX,AMZN,AAPL&portfolios=10').then(resp => {
                 dataEF = resp.data;
+                console.log(dataEF);
                 addDataToTable(dataEF);
             });
             function addDataToTable(dataEF) {

@@ -20,9 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin
 @RestController
 public class EFController {
+
+	@GetMapping("/stock")
+	public ArrayList<Double> getAdjustedClose(@RequestParam(value = "ticker", defaultValue = "INTC") String ticker) {
+		Calendar from = Calendar.getInstance();
+		from.add(Calendar.MONTH, -13);
+		return new StockWrapper(ticker,from, Calendar.getInstance()).getAdjustedCloses();
+	}
 	
 	@GetMapping("/")
-	public Map<Integer, double[]> efficientFrontier(
+	public Map<String, Object> efficientFrontier(
 			@RequestParam ArrayList<String> tickers,
 			@RequestParam(value = "portfolios", defaultValue = "10") int portfolios
 			)
@@ -31,10 +38,13 @@ public class EFController {
 		from.add(Calendar.MONTH, -6);
 		Calendar to = Calendar.getInstance();
 		Portfolio portfolio = new Portfolio(tickers, from, to);
-		Map<Integer, double[]> ef = new HashMap<Integer,double[]>();
+		Map<String, Object> response = new HashMap<>();
+		response.put("tickers", tickers);
+		Map<Integer,Object> curveList = new HashMap<>();
 		//make sure to have the same set of random weights for debugging purpose
 		Random random = new Random(3000);
 		for (int i = 0; i< portfolios; i++) {
+			Map<String,Object> point = new HashMap<>();
 			int stockNumber = portfolio.getStockWrappers().size();
 			double[] weights = generateWeights(random, stockNumber);			
 			for (int j = 0; j < stockNumber; j++) {
@@ -43,11 +53,39 @@ public class EFController {
 			double returnRate = portfolio.getReturnRate();
 			// calculate risk
 			double riskRate = portfolio.getRiskRate();
-			double[] values = new double[] {returnRate, riskRate};
-			ef.put(i,values);
+			point.put("risk",riskRate);
+			point.put("return",returnRate);
+			point.put("weights", weights);
+			curveList.put(i,point);
 		}
-		return ef;
+		response.put("curveList", curveList);
+		return response;
 	}
+//	@GetMapping("/")
+//	public ArrayList<Portfolio> efficientFrontier(
+//			@RequestParam ArrayList<String> tickers,
+//			@RequestParam(value = "portfolios", defaultValue = "10") int portfolios
+//			)
+//	{
+//		Calendar from = Calendar.getInstance();
+//		from.add(Calendar.MONTH, -6);
+//		Calendar to = Calendar.getInstance();
+//		ArrayList<Portfolio> listPortfolios= new ArrayList<>();
+//		Portfolio portfolio = new Portfolio(tickers, from, to);
+//		//make sure to have the same set of random weights for debugging purpose
+//		Random random = new Random(3000);
+//		for (int i = 0; i< portfolios; i++) {
+//			int stockNumber = portfolio.getStockWrappers().size();
+//			double[] weights = generateWeights(random, stockNumber);			
+//			for (int j = 0; j < stockNumber; j++) {
+//				portfolio.getStockWrappers().get(j).setWeight(weights[j]);
+//			}
+//			portfolio.resetReturnRate();
+//			portfolio.resetRiskRate();
+//			listPortfolios.add(portfolio);
+//		}
+//		return listPortfolios;
+//	}
 	
 	public static double[] generateWeights(Random random, int stocksNumber) {
 		double sum = 0;
