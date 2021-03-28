@@ -52,7 +52,7 @@
         </style>
         <script>
             var i;
-            axios.get('https://restef.herokuapp.com/ef?tickers=NFLX,AMZN,INTC&portfolios=10000').then(resp => {
+            axios.get('http://localhost:8080/api/ef?tickers=NFLX,AMZN,INTC&portfolios=10000').then(resp => {
                 dataEF = resp.data;
                 console.log(dataEF);
                 addDataToTable(dataEF);
@@ -91,6 +91,10 @@
                     chart: {
                         type: "scatter"
                     },
+                    boost: {
+                        useGPUTranslations: true,
+                        usePreAllocated: true
+                    },
                     title: {
                         text: "Efficient Frontier"
                     },
@@ -108,7 +112,8 @@
                         }
                     },
                     tooltip: {
-                        pointFormat: "Risk: <b>{point.x}</b><br> Return: <b>{point.y}</b>"
+                        pointFormat: "Risk: <b>{point.x}</b><br> Return: <b>{point.y}</b>",
+                        followPointer: false,
                     }
                 });
             }

@@ -85,7 +85,14 @@
 		    <artifactId>junit</artifactId>
 		    <version>4.13.1</version>
 		    <scope>test</scope>
-		</dependency>	
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
+		<dependency>
+		    <groupId>org.springdoc</groupId>
+		    <artifactId>springdoc-openapi-ui</artifactId>
+		    <version>1.5.6</version>
+		</dependency>
+			
 	</dependencies>
 
 	<build>

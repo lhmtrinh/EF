@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @CrossOrigin
 @RestController
 public class EFRestController {
-	@GetMapping("/ef")
+	@GetMapping("/api/ef")
 	public Map<String, Object> efficientFrontier(
 			@RequestParam ArrayList<String> tickers,
 			@RequestParam(value = "portfolios", defaultValue = "10") int portfolios
