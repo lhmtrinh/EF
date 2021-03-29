@@ -25,12 +25,16 @@ public class EFRestController {
 	@GetMapping("/api/ef")
 	public Map<String, Object> efficientFrontier(
 			@RequestParam ArrayList<String> tickers,
-			@RequestParam(value = "portfolios", defaultValue = "10") int portfolios
+			@RequestParam(defaultValue = "10000") int portfolios,
+			@RequestParam(value = "from") int fromYear,
+			@RequestParam(value = "to") int toYear
 			)
 	{
 		Calendar from = Calendar.getInstance();
-		from.add(Calendar.MONTH, -6);
 		Calendar to = Calendar.getInstance();
+		from.set(fromYear,Calendar.JANUARY,01,0,0,0);
+		to.set(toYear,Calendar.JANUARY,1,0,0,0);
+		
 		Portfolio portfolio = new Portfolio(tickers, from, to);
 		Map<String, Object> response = new HashMap<>();
 		response.put("tickers", tickers);
