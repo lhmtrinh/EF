@@ -19,33 +19,37 @@ public class PortfolioTest {
 	Calendar from = Calendar.getInstance();
 	Calendar to = Calendar.getInstance();
 	Portfolio portfolio;
-	
+
 	@Before
 	public void initiate() {
-		to.set(2020,9,1);
-		from.set(2020,9,1);
-		from.add(Calendar.MONTH, -6);
-		ArrayList<String> tickers = new ArrayList<String>(Arrays.asList("INTC","UU.L"));
+		to.set(2020, Calendar.JANUARY, 1, 0, 0, 0);
+		from.set(2019, Calendar.JANUARY, 1, 0, 0, 0);
+		ArrayList<String> tickers = new ArrayList<String>(Arrays.asList("INTC", "NFLX"));
 		portfolio = new Portfolio(tickers, from, to);
 		portfolio.getStockWrappers().get(0).setWeight(50);
 		portfolio.getStockWrappers().get(1).setWeight(50);
-		
+
 	}
+
 	@Test
 	public void eliminateAbundantAdjustedCLosesTest() {
-		//Removing 2 adjusted prices of a stock to test
+		// Removing 2 adjusted prices of a stock to test if they eliminate abundant
+		// prices
 		StockWrapper stock1 = portfolio.getStockWrappers().get(0);
 		StockWrapper stock2 = portfolio.getStockWrappers().get(0);
-		stock2.getAdjustedCloses().remove(stock1.getAdjustedCloses().size()-2);
+		stock2.getAdjustedCloses().remove(stock1.getAdjustedCloses().size() - 2);
 		portfolio.eliminateAbundantAdjustedCloses();
-		assertTrue(stock1.getAdjustedCloses().size()==stock2.getAdjustedCloses().size());
+		assertTrue(stock1.getAdjustedCloses().size() == stock2.getAdjustedCloses().size());
 	}
+
 	@Test
 	public void getReturnRateTest() {
-		assertEquals(-1.2504, portfolio.getReturnRate(),0.00009);
+		System.out.println("Return rate is" + portfolio.getReturnRate());
+		assertEquals(1.740556970197, portfolio.getReturnRate(), 0.00009);
 	}
-	@Test 
+
+	@Test
 	public void getRiskRate() {
-		assertEquals(5.0232, portfolio.getRiskRate(),0.00009);
-	}	
+		assertEquals(6.446864963129, portfolio.getRiskRate(), 0.00009);
+	}
 }

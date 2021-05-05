@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"efficientFrontier"},{"l":"efficientFrontier.annotation"},{"l":"efficientFrontier.controller"},{"l":"efficientFrontier.model"},{"l":"model"}]
